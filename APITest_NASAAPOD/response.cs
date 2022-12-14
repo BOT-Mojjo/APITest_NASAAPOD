@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-public class response
+public class ApodResponse
 {
     public string title { get; set; }
     public string date { get; set; }
