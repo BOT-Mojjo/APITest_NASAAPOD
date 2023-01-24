@@ -4,14 +4,13 @@ using System.Text.Json.Serialization;
 using RestSharp;
 public class APODRequest
 {
-    protected string apiKey = "";
+    static public string apiKey = "";
     protected string endPoint = "apod?api_key=";// + apiKey
-    public APODResponse response;
-    public APODRequest(string newApiKey = "")
-    {
-        apiKey = newApiKey;
-        Console.WriteLine();
-    }
+    // public APODRequest(string newApiKey = "DEMO_KEY")
+    // {
+    //     apiKey = newApiKey;
+    //     Console.WriteLine();
+    // }
     public string req()
     {
         return endPoint+apiKey;
@@ -21,13 +20,14 @@ public class APODRequest
 public class RandomRequest : APODRequest
 {
     int count = 0;
-
-    public string req()
+    // public RandomRequest(string newApiKey) : base(newApiKey){}
+    public new string req()
     {
         Console.Write("Amount of Pictures: ");
         if(int.TryParse(Console.ReadLine(), out count) && count != 0)
         {
-            return endPoint+apiKey+"&count="+count;;
+            endPoint = endPoint+apiKey+"&count="+count;
+            return endPoint;
         }
         Console.WriteLine("Please input a number.");
         Console.ReadLine();
@@ -39,10 +39,11 @@ public class DateRequest : APODRequest
 {
     protected string date = "";
 
-    public string req()
+    public new string req()
     {
         date = GetDate();
-        return endPoint+apiKey+"?date="+date;
+        endPoint = endPoint+apiKey+"?date="+date;
+        return endPoint;
     }
 
     protected string GetDate()
@@ -63,8 +64,9 @@ public class DateRequest : APODRequest
 public class RangeRequest : DateRequest
 {
     string endDate = "";
-    public string req()
+    public string req(string newApiKey = "DEMO_KEY")
     {
+        apiKey = newApiKey;
         Console.Write("First date:\n");
         date = GetDate();
         Console.Write("\nLast date:\n");
