@@ -24,27 +24,22 @@ while(true)
     if(CachedAnswers.Count > 0){
         Console.WriteLine("Currently cached anwsers: " + CachedAnswers.Count);
     }
-    Console.WriteLine("1: Todays Picture\n2: APOD of specified Date\n3: Random APODs\n4: All APODs during specefied time\n5: Change current API key\n6: Exit Application\n");
+    Console.WriteLine("1: Todays Picture\n2: APOD of specified Date\n3: Random APODs\n4: All APODs during specefied time\n5: Change current API key\n6: View currently cached anwsers\n7: Exit Application\n");
     int choice = 0;
     int.TryParse(Console.ReadLine().Trim(), out choice);
-    APODRequest APODReq = null;
     switch(choice)
     {
         case 1:
-        APODReq = new APODRequest();
-        APODRequester(APODReq, client, CachedAnswers);
+        APODRequester(new APODRequest(), client, CachedAnswers);
         break;
         case 2:
-        APODReq = new DateRequest();
-        APODRequester(APODReq, client, CachedAnswers);
+        APODRequester(new DateRequest(), client, CachedAnswers);
         break;
         case 3:
-        APODReq = new RandomRequest();
-        APODRequester(APODReq, client, CachedAnswers);
+        APODRequester(new RandomRequest(), client, CachedAnswers);
         break;
         case 4:
-        APODReq = new RangeRequest();
-        APODRequester(APODReq, client, CachedAnswers);
+        APODRequester(new RangeRequest(), client, CachedAnswers);
         break;
         case 5:
         while(true)
@@ -58,6 +53,9 @@ while(true)
                 break;
             }
         }
+        break;
+        case 6:
+        new Viewer(CachedAnswers);
         
         break;
         default:
@@ -75,7 +73,17 @@ void APODRequester(APODRequest tempRequest, RestClient localClient, List<APODRes
     RestRequest localRequest = new(tempRequest.req());
     localResponse = client.GetAsync(localRequest).Result;
     if(APIReturnCheck(localResponse)) return;
-    listCache.Add(JsonSerializer.Deserialize<APODResponse>(localResponse.Content));
+    try
+    {
+        listCache.Add(JsonSerializer.Deserialize<APODResponse>(localResponse.Content));
+    } catch
+    {
+        List<APODResponse> tempList = JsonSerializer.Deserialize<List<APODResponse>>(localResponse.Content);
+        foreach(APODResponse tmpContent in tempList)
+        {
+            listCache.Add(tmpContent);
+        }
+    }
 }
 
 //To check if the returned conten exists to avoid Json deserialiser exception

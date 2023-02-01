@@ -11,7 +11,7 @@ public class APODRequest
     //     apiKey = newApiKey;
     //     Console.WriteLine();
     // }
-    public string req()
+    public virtual string req()
     {
         return endPoint+apiKey;
     }
@@ -21,7 +21,7 @@ public class RandomRequest : APODRequest
 {
     int count = 0;
     // public RandomRequest(string newApiKey) : base(newApiKey){}
-    public new string req()
+    public override string req()
     {
         Console.Write("Amount of Pictures: ");
         if(int.TryParse(Console.ReadLine(), out count) && count != 0)
@@ -39,7 +39,7 @@ public class DateRequest : APODRequest
 {
     protected string date = "";
 
-    public new string req()
+    public override string req()
     {
         date = GetDate();
         endPoint = endPoint+apiKey+"?date="+date;
@@ -64,9 +64,8 @@ public class DateRequest : APODRequest
 public class RangeRequest : DateRequest
 {
     string endDate = "";
-    public string req(string newApiKey = "DEMO_KEY")
+    public override string req()
     {
-        apiKey = newApiKey;
         Console.Write("First date:\n");
         date = GetDate();
         Console.Write("\nLast date:\n");
